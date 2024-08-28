@@ -1,10 +1,13 @@
 #include <iostream>
-
+#include "Game.h"
 
 int main()
 {
-   // TODO: do some magic
+    Game game;
 
-   
-	return ret;
+    game.Initialize();
+    game.Run();
+    game.Destroy();
+
+	return 0;
 }
