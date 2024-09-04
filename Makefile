@@ -1,5 +1,4 @@
-TARGET = gameengine 
-SRC_DIR = src
+TARGET = gameengine
 
 # Toolchain definitions
 CC  = gcc
@@ -13,9 +12,11 @@ OS  = size
 # Compiling flags & linking flags
 INCLUDE  = -Ilibs
 CXXFLAGS = -Wall -g -O2 -std=c++17
-LDFLAGS  = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3
+LDFLAGS  = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3 libs/rxi/rxi.a 
 # Source files
-SRCS  = $(wildcard $(SRC_DIR)/*.cpp)
+MODULES = Game Logger
+SRC_DIRS = $(addprefix src/,$(MODULES)) src
+SRCS  = $(foreach sdir,$(SRC_DIRS),$(wildcard $(sdir)/*.cpp))
 OBJS  = $(SRCS:.cpp=.o)
 
 .PHONY: all

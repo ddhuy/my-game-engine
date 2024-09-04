@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "../Logger/Logger.h"
 
 #include <iostream>
 
@@ -9,12 +10,12 @@
 
 Game::Game()
 {
-    std::cout << "Game Constructor called!" << std::endl;
+    Logger::Log("Game Constructor called!");
 }
 
 Game::~Game()
 {
-    std::cout << "Game Destructor called!" << std::endl;
+    Logger::Log("Game Destructor called!");
 }
 
 void Game::Initialize()
@@ -23,7 +24,7 @@ void Game::Initialize()
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        std::cerr << "Error initializing SDL." << std::endl;
+        Logger::Err("Error initializing SDL.");
         return;
     }
 
@@ -38,14 +39,14 @@ void Game::Initialize()
         SDL_WINDOW_BORDERLESS);
     if (!window)
     {
-        std::cerr << "Error creating SDL window." << std::endl;
+        Logger::Err("Error creating SDL window.");
         return;
     }
     
     renderer = SDL_CreateRenderer(window, -1, SDL_WINDOW_FULLSCREEN);
     if (!renderer)
     {
-        std::cerr << "Error creating SDL Renderer." << std::endl;
+        Logger::Err("Error creating SDL Renderer.");
         return;
     }
 
@@ -82,21 +83,28 @@ glm::vec2 playerVelocity;
 void Game::Setup()
 {
     playerPosition = glm::vec2{10.0, 20.0};
-    playerVelocity = glm::vec2(0.5, 0.0);
+    playerVelocity = glm::vec2(100, 5.0);
 }
 
 
 void Game::Update()
 {
     // if we are too fast, waste some time until we reach the MILLISECS_PER_FRAME
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecsPreviousFrame + MILLISECS_PER_FRAME))
-        ;
+    // while (!SDL_TICKS_PASSED(SDL_GetTicks(), millisecsPreviousFrame + MILLISECS_PER_FRAME))
+    //     ;
+    // Another method to save CPU resource than using dummy while loop
+    // int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - millisecsPreviousFrame);
+    // if (timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME)
+    //     SDL_Delay(timeToWait);
+
+    // The difference in ticks since the last frame, converted to seconds;
+    double deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
 
     // Store the current frame time
     millisecsPreviousFrame = SDL_GetTicks();
 
-    playerPosition.x += playerVelocity.x;
-    playerPosition.y += playerVelocity.y;
+    playerPosition.x += playerVelocity.x * deltaTime;
+    playerPosition.y += playerVelocity.y * deltaTime;
 }
 
 void Game::Render()
