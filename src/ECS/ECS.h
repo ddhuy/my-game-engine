@@ -65,7 +65,11 @@ private:
 public:
     Entity(const int id): id(id) {};
 
+    Entity(const Entity &entity) = default;
+
     int GetId() const { return this->id; }
+
+    Entity& operator=(const Entity &entity) = default;
 
     bool operator==(const Entity &entity)
     {
