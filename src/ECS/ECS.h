@@ -19,19 +19,38 @@ typedef std::bitset<MAX_COMPONENTS> Signature;
 ///////////////////////////////////////////////////////////////////////////////
 // 
 ///////////////////////////////////////////////////////////////////////////////
-class IComponent
+template <typename T>
+class Component
 {
-protected:
+private:
     static int componentId;
-};
 
-class Component: public IComponent
-{
 public:
-    int GetId() const
+    // Return the unique id of Component<T>
+    static int GetId()
     {
-        static const int id = ++componentId;
+        static auto id = ++componentId;
         return id;
+    }
+
+    bool operator==(const Component &component)
+    {
+        return GetId() == component.GetId();
+    }
+
+    bool operator!=(const Component &component)
+    {
+        return GetId() != component.GetId();
+    }
+
+    bool operator>(const Component &component)
+    {
+        return GetId() > component.GetId();
+    }
+
+    bool operator<(const Component &component)
+    {
+        return GetId() < component.GetId();
     }
 };
 
@@ -47,6 +66,26 @@ public:
     Entity(const int id): id(id) {};
 
     int GetId() const { return this->id; }
+
+    bool operator==(const Entity &entity)
+    {
+        return this->GetId() == entity.GetId();
+    }
+
+    bool operator!=(const Entity &entity)
+    {
+        return this->GetId() != entity.GetId();
+    }
+
+    bool operator>(const Entity &entity)
+    {
+        return this->GetId() > entity.GetId();
+    }
+
+    bool operator<(const Entity &entity)
+    {
+        return this->GetId() < entity.GetId();
+    }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
