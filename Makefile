@@ -14,7 +14,7 @@ INCLUDE  = -Ilibs
 CXXFLAGS = -Wall -g -O2 -std=c++17
 LDFLAGS  = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3
 # Source files
-MODULES = Game Logger
+MODULES = Components ECS Entities Game Logger Systems
 SRC_DIRS = $(addprefix src/,$(MODULES)) src
 SRCS  = $(foreach sdir,$(SRC_DIRS),$(wildcard $(sdir)/*.cpp))
 OBJS  = $(SRCS:.cpp=.o)
