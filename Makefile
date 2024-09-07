@@ -1,4 +1,4 @@
-TARGET = gameengine
+APP_NAME = gameengine
 
 # Toolchain definitions
 CC  = gcc
@@ -9,20 +9,29 @@ OC  = objcopy
 OD  = objdump
 OS  = size
 
+# Directories
+SRC_D = src
+BUILD_D = build
+MODULES = Components ECS Entities Game Logger Systems
+
 # Compiling flags & linking flags
 INCLUDE  = -Ilibs
 CXXFLAGS = -Wall -g -O2 -std=c++17
 LDFLAGS  = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3
 # Source files
-MODULES = Components ECS Entities Game Logger Systems
-SRC_DIRS = $(addprefix src/,$(MODULES)) src
+SRC_DIRS = $(addprefix $(SRC_D)/,$(MODULES)) $(SRC_D)
+BUILD_DIRS = $(addprefix $(BUILD_D)/,$(MODULES)) $(BUILD_D)
 SRCS  = $(foreach sdir,$(SRC_DIRS),$(wildcard $(sdir)/*.cpp))
-OBJS  = $(SRCS:.cpp=.o)
+OBJS  = $(patsubst $(SRC_D)/%.cpp,$(BUILD_D)/%.o,$(SRCS))
+TARGET = $(BUILD_D)/$(APP_NAME)
 
 .PHONY: all
-all: $(TARGET)
+all: $(BUILD_DIRS) | $(TARGET)
 
-%.o: %.cpp
+$(BUILD_DIRS):
+	@mkdir -p $@
+
+$(BUILD_D)/%.o: $(SRC_D)/%.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCLUDE) $< -o $@
 	@echo ""
 
@@ -32,10 +41,9 @@ $(TARGET): $(OBJS)
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET)
+	@rm -rf $(BUILD_D)
 
 .PHONY: run
 run: $(TARGET)
 	@chmod +x $(TARGET)
 	./$(TARGET)
-
